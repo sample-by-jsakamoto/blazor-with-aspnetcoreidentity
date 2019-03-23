@@ -13,6 +13,7 @@ using WebApplication2.Data;
 using WebApplication2.Models;
 using WebApplication2.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace WebApplication2
 {
@@ -47,16 +48,24 @@ namespace WebApplication2
 
             services.AddMvc()
                 .AddNewtonsoftJson();
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 //app.UseDatabaseErrorPage();
+                app.UseResponseCompression();
             }
             else
             {
@@ -68,17 +77,16 @@ namespace WebApplication2
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting(routes =>
+            app.UseMvc(routes =>
             {
-                routes.MapControllerRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRazorPages();
+                routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
             });
 
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseBlazor<BlazorApplication1.Client.Startup>();
         }
     }
 }
