@@ -1,0 +1,9 @@
+﻿@page "/fallback"
+@inject IJSRuntime JSRuntime
+
+@functions{
+    protected override void OnInit()
+    {
+        (JSRuntime as IJSInProcessRuntime).Invoke<object>("eval", "window.location.href = window.location.href");
+    }
+}
