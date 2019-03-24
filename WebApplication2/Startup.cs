@@ -65,7 +65,6 @@ namespace WebApplication2
                 //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 //app.UseDatabaseErrorPage();
-                app.UseResponseCompression();
             }
             else
             {
@@ -77,6 +76,7 @@ namespace WebApplication2
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
@@ -84,7 +84,6 @@ namespace WebApplication2
 
             app.UseCookiePolicy();
 
-            app.UseAuthentication();
 
             app.UseBlazor<BlazorApplication1.Client.Startup>();
         }
