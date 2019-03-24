@@ -1,8 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Contact";
-}
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+﻿@page "/Home/Contact"
+
+<h2>@Title</h2>
+<h3>@Message</h3>
 
 <address>
     One Microsoft Way<br />
@@ -15,3 +14,9 @@
     <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
     <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
 </address>
+
+@functions{
+    string Title = "Contact";
+
+    string Message = "Your contact page.";
+}
