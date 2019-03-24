@@ -1,1 +1,17 @@
-﻿<Router AppAssembly="typeof(Program).Assembly" FallbackComponent="typeof(BlazorApplication1.Client.Pages._Fallback)" />
+﻿@using BlazorApplication1.Shared
+@inject HttpClient HttpClient
+
+<CascadingValue Value="UserIdentity">
+    <Router AppAssembly="typeof(Program).Assembly" FallbackComponent="typeof(BlazorApplication1.Client.Pages._Fallback)" />
+</CascadingValue>
+
+@functions{
+
+    UserIdentity UserIdentity = new UserIdentity();
+
+    protected override async Task OnInitAsync()
+    {
+        this.UserIdentity = await HttpClient.GetJsonAsync<UserIdentity>("/api/useridentity");
+        Console.WriteLine($"Fetched UserIdentity: {UserIdentity.IsSignedIn}, {UserIdentity.Name}");
+    }
+}

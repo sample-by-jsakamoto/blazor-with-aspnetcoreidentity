@@ -242,7 +242,7 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // TODO: [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
