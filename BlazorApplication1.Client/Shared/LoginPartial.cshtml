@@ -1,4 +1,5 @@
 ﻿@using BlazorApplication1.Shared
+@inject AntiforgeryService Antiforgery
 
 @if (UserIdentity.IsSignedIn)
 {
@@ -11,6 +12,7 @@
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
             </li>
         </ul>
+        <input name="__RequestVerificationToken" type="hidden" value="@Antiforgery.Token" />
     </form>
 }
 else

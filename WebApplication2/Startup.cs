@@ -14,6 +14,7 @@ using WebApplication2.Models;
 using WebApplication2.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace WebApplication2
 {
@@ -29,6 +30,8 @@ namespace WebApplication2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -56,7 +59,7 @@ namespace WebApplication2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAntiforgery antiforgery)
         {
             app.UseResponseCompression();
 
@@ -77,13 +80,25 @@ namespace WebApplication2
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.Use(next => context =>
+            {
+                if (context.Request.Method == "GET")
+                {
+                    var tokens = antiforgery.GetAndStoreTokens(context);
+                    context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken,
+                        new CookieOptions { HttpOnly = false });
+                }
+
+                return next(context);
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
             });
 
             app.UseCookiePolicy();
-
 
             app.UseBlazor<BlazorApplication1.Client.Startup>();
         }
